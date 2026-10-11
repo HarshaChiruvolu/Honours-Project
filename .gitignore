@@ -23,3 +23,6 @@ Desktop.ini
 
 # Logs and temp files
 *.log
+
+# Personal templates and review presentations
+Honours_Project_Templates/

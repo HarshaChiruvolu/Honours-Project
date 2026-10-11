@@ -14,7 +14,6 @@ This project performs Exploratory Data Analysis (EDA) and applies machine learni
 ## Project Structure
 - [harsha_model.py](file:///V:/HONOURS%20PROJECT/harsha_model.py): Core training and evaluation pipeline.
 - [student_performance_dataset.csv](file:///V:/HONOURS%20PROJECT/student_performance_dataset.csv): Dataset with student academic attributes and performance outcomes.
-- [Honours_Project_Templates/](file:///V:/HONOURS%20PROJECT/Honours_Project_Templates): Project documentation templates and review presentation slides.
 
 ## Setup & Execution
 1. Create and activate a virtual environment:
