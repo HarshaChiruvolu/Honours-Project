@@ -26,3 +26,12 @@ Desktop.ini
 
 # Personal templates and review presentations
 Honours_Project_Templates/
+.env
+
+# Next.js and Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ChromaDB Data
+backend/vector_store/chroma_data/

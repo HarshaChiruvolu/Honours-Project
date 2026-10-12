@@ -1,0 +1,35 @@
+{
+  "features": [
+    "Gender",
+    "Study_Hours_per_Week",
+    "Attendance_Rate",
+    "Past_Exam_Scores",
+    "Parental_Education_Level",
+    "Internet_Access_at_Home",
+    "Extracurricular_Activities"
+  ],
+  "categorical_mappings": {
+    "Gender": {
+      "Male": 1,
+      "Female": 0
+    },
+    "Internet_Access_at_Home": {
+      "Yes": 1,
+      "No": 0
+    },
+    "Extracurricular_Activities": {
+      "Yes": 1,
+      "No": 0
+    },
+    "Parental_Education_Level": {
+      "High School": 0,
+      "Bachelors": 1,
+      "Masters": 2,
+      "PhD": 3
+    }
+  },
+  "expected_value": 59.65936925642717,
+  "test_r2": 0.7720641807820929,
+  "test_rmse": 3.1140849591924846,
+  "passing_threshold": 60.0
+}
