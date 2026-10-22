@@ -68,3 +68,46 @@ export async function sendChatMessage(
 
   return response.json();
 }
+
+export async function fetchCourseMaterials(): Promise<import("./types").CourseMaterial[]> {
+  const response = await fetchWithFallback("/api/documents", {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Network error" }));
+    throw new Error(err.detail || `Failed to fetch course materials: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function uploadCourseMaterial(file: File): Promise<import("./types").DocumentUploadResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetchWithFallback("/api/documents/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Upload failed" }));
+    throw new Error(err.detail || `Failed to upload material: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function deleteCourseMaterial(filename: string): Promise<any> {
+  const response = await fetchWithFallback(`/api/documents/${encodeURIComponent(filename)}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Delete failed" }));
+    throw new Error(err.detail || `Failed to delete material: ${response.statusText}`);
+  }
+
+  return response.json();
+}

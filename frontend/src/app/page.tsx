@@ -8,6 +8,7 @@ import { ShapWaterfallChart } from "@/components/ShapWaterfallChart";
 import { RetrievedTopicsCard } from "@/components/RetrievedTopicsCard";
 import { RemediationRoadmap } from "@/components/RemediationRoadmap";
 import { RemediationChat } from "@/components/RemediationChat";
+import { CourseMaterialsViewer } from "@/components/CourseMaterialsViewer";
 import { StudentInput, AnalyzeResponse } from "@/lib/types";
 import { analyzeStudent } from "@/lib/api";
 import { Sparkles, Binary, Database, Cpu, MessageSquare, AlertCircle } from "lucide-react";
@@ -158,6 +159,11 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Course Materials & Reference Knowledge Base (PDF, Markdown, Text RAG) */}
+        <div className="pt-4">
+          <CourseMaterialsViewer />
         </div>
       </main>
 

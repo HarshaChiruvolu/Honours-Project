@@ -90,4 +90,44 @@ class VectorService:
         query = " ".join(deficit_phrases) if deficit_phrases else "recursion, pointers, memory, divide and conquer"
         return self.retrieve(query, top_k=top_k)
 
+    def add_documents(self, texts: List[str], metadatas: List[dict], ids: List[str]) -> int:
+        """Adds semantic text chunks and metadata directly into persistent ChromaDB."""
+        if self.vectorstore is None:
+            self._init_vectorstore()
+        if self.vectorstore is None:
+            raise RuntimeError("ChromaDB vector store is not initialized.")
+
+        self.vectorstore.add_texts(texts=texts, metadatas=metadatas, ids=ids)
+        return len(texts)
+
+    def delete_by_source(self, source_name: str) -> int:
+        """Deletes any chunks matching the source filename from ChromaDB."""
+        if self.vectorstore is None:
+            self._init_vectorstore()
+        if self.vectorstore is None:
+            return 0
+
+        try:
+            existing = self.vectorstore.get(where={"source": source_name})
+            ids_to_delete = existing.get("ids", [])
+            if ids_to_delete:
+                self.vectorstore.delete(ids=ids_to_delete)
+                return len(ids_to_delete)
+        except Exception as e:
+            print(f"Error deleting from ChromaDB by source: {e}")
+        return 0
+
+    def get_all_collection_data(self) -> dict:
+        """Returns all documents and metadata currently indexed in ChromaDB."""
+        if self.vectorstore is None:
+            self._init_vectorstore()
+        if self.vectorstore is None:
+            return {"ids": [], "metadatas": []}
+
+        try:
+            return self.vectorstore.get(include=["metadatas"])
+        except Exception as e:
+            print(f"Error fetching collection data: {e}")
+            return {"ids": [], "metadatas": []}
+
 vector_service = VectorService()

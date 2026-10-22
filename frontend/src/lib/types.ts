@@ -79,3 +79,23 @@ export interface ChatResponse {
   reply: string;
   grounded_sources: string[];
 }
+
+export interface CourseMaterial {
+  filename: string;
+  title: string;
+  file_type: string;
+  total_chunks: number;
+  sections: string[];
+  size_bytes: number;
+  uploaded_at: string;
+  is_default: boolean;
+}
+
+export interface DocumentUploadResponse {
+  status: string;
+  message: string;
+  filename: string;
+  file_type: string;
+  chunks_created: number;
+  title: string;
+}

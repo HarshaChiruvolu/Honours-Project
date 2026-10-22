@@ -107,3 +107,24 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     grounded_sources: List[str] = []
+
+# ==========================================
+# 8. Course Materials & Document RAG DTOs
+# ==========================================
+class CourseMaterial(BaseModel):
+    filename: str
+    title: str
+    file_type: str  # "PDF", "Markdown", "Text"
+    total_chunks: int
+    sections: List[str]
+    size_bytes: int
+    uploaded_at: str
+    is_default: bool
+
+class DocumentUploadResponse(BaseModel):
+    status: str
+    message: str
+    filename: str
+    file_type: str
+    chunks_created: int
+    title: str
