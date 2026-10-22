@@ -57,6 +57,8 @@ class LangChainService:
                     model=settings.GEMINI_MODEL,
                     google_api_key=api_key,
                     temperature=0.2,
+                    request_timeout=25,
+                    max_retries=2,
                 )
             except Exception as e:
                 print(f"Warning: Failed to initialize ChatGoogleGenerativeAI: {e}")
@@ -371,6 +373,7 @@ class LangChainService:
     ) -> ChatResponse:
         """
         Grounded conversational tutor answering student questions using ChromaDB retrieval and Gemini.
+        Tailors pedagogical depth, analogies, and complexity based on student diagnostic context.
         """
         if self.llm is None:
             self._init_llm()
@@ -381,11 +384,70 @@ class LangChainService:
 
         context_str = "\n\n".join([f"[{c.title} - {c.section}]: {c.excerpt}" for c in retrieved])
 
+        # Extract student diagnostic profile if provided
+        predicted_score = None
+        pass_status = None
+        top_deficits = []
+
+        if student_context and isinstance(student_context, dict):
+            # Check if nested in prediction object
+            if "prediction" in student_context and isinstance(student_context["prediction"], dict):
+                pred_dict = student_context["prediction"]
+                predicted_score = pred_dict.get("predicted_score")
+                pass_status = pred_dict.get("pass_fail_status")
+            elif "predicted_score" in student_context:
+                predicted_score = student_context.get("predicted_score")
+                pass_status = student_context.get("pass_fail_status")
+
+            if "explainability" in student_context and isinstance(student_context["explainability"], dict):
+                top_deficits = student_context["explainability"].get("top_deficits", [])
+            elif "top_deficits" in student_context:
+                top_deficits = student_context.get("top_deficits", [])
+
+        # Formulate adaptive pedagogical tuning
+        if predicted_score is not None:
+            if predicted_score < 50 or (pass_status and str(pass_status).lower() == "fail"):
+                student_tuning = (
+                    f"STUDENT DIAGNOSTIC CALIBRATION: [AT-RISK / STRUGGLING] (Score: {predicted_score}/100, Status: FAIL)\n"
+                    f"Primary Concept Deficits: {', '.join(top_deficits) if top_deficits else 'Foundations & Call Stack Tracing'}\n"
+                    "PEDAGOGICAL TEACHING MANDATE:\n"
+                    "1. Explain concepts from first principles using intuitive real-world analogies (e.g. stack of plates for call stack, sticky notes with addresses for pointers).\n"
+                    "2. Avoid overwhelming academic jargon. Break complex definitions down into step-by-step plain English.\n"
+                    "3. Provide clean, beginner-friendly code examples annotated with line-by-line comments.\n"
+                    "4. Proactively highlight common student pitfalls and exam traps.\n"
+                    "5. Keep tone warmly encouraging, patient, and finish with a brief check-for-understanding question."
+                )
+            elif predicted_score < 75:
+                student_tuning = (
+                    f"STUDENT DIAGNOSTIC CALIBRATION: [BORDERLINE / DEVELOPING] (Score: {predicted_score}/100, Status: PASS)\n"
+                    f"Key Areas to Strengthen: {', '.join(top_deficits) if top_deficits else 'Exam Edge-Cases & Memory Safety'}\n"
+                    "PEDAGOGICAL TEACHING MANDATE:\n"
+                    "1. Provide balanced, academically rigorous explanations combining intuition with standard implementation.\n"
+                    "2. Focus heavily on edge cases: empty inputs, single-node trees, dangling pointer traps, boundary conditions.\n"
+                    "3. Clearly analyze time and auxiliary space complexity in Big-O notation.\n"
+                    "4. Provide practical tips on how this concept is evaluated in standard university exams."
+                )
+            else:
+                student_tuning = (
+                    f"STUDENT DIAGNOSTIC CALIBRATION: [HIGH ACHIEVER / HONORS MASTERY] (Score: {predicted_score}/100, Status: DISTINCTION)\n"
+                    "PEDAGOGICAL TEACHING MANDATE:\n"
+                    "1. Skip elementary basics unless specifically requested. Engage as a peer computer science researcher.\n"
+                    "2. Dive deep into architectural and runtime mechanics: compiler optimizations, activation record layouts, Tail-Call Optimization (TCO), cache line spatial locality, and memory fragmentation.\n"
+                    "3. Provide formal asymptotic proofs, amortized analysis, and mathematical rigor.\n"
+                    "4. Challenge the student with non-trivial follow-up edge cases, invariants, or competitive programming optimizations."
+                )
+        else:
+            student_tuning = (
+                "STUDENT DIAGNOSTIC CALIBRATION: [GENERAL UNDERGRADUATE]\n"
+                "Explain clearly, precisely, and with balanced technical rigor suitable for university computer science undergraduates."
+            )
+
         system_instruction = (
             "You are an encouraging, academically rigorous Computer Science Professor and Tutor at IIIT Kottayam.\n"
             "Answer the student's question clearly, precisely, and grounded in the provided curriculum excerpts.\n"
             "If the student's question relates to recursion, trees, memory, pointers, or sorting, provide concrete code examples and time/space complexity analysis.\n"
-            "Do not hallucinate facts outside computer science best practices.\n"
+            "Do not hallucinate facts outside computer science best practices.\n\n"
+            f"{student_tuning}\n"
         )
 
         messages = [("system", system_instruction)]
@@ -406,12 +468,25 @@ class LangChainService:
             except Exception as e:
                 print(f"Chat LLM error: {e}")
 
-        # Fallback response
-        fallback_reply = (
-            f"Regarding your query on '{message}': In Data Structures & Algorithms, understanding memory layout "
-            f"and recursive activation records is paramount. Ensure you always define valid base cases to avoid stack overflow, "
-            f"and use post-order traversal when freeing hierarchical structures to avoid dereferencing dangling pointers."
-        )
+        # Deterministic fallback response dynamically tuned to student profile
+        if predicted_score is not None and (predicted_score < 50 or str(pass_status).lower() == "fail"):
+            fallback_reply = (
+                f"Regarding your query on '{message}': In simple terms, think of the Call Stack like a stack of plates—each function call places a new plate on top. "
+                f"If you don't have a stopping condition (a base case), the stack keeps growing until it crashes with a Stack Overflow! "
+                f"Always make sure every recursive function checks its base case first before calling itself."
+            )
+        elif predicted_score is not None and predicted_score >= 75:
+            fallback_reply = (
+                f"Regarding your query on '{message}': From a systems architecture perspective, activation records push return pointers and stack frames onto the thread's call stack. "
+                f"When Tail-Call Optimization (TCO) is enabled by the compiler, the existing frame is overwritten via a JMP rather than a CALL, reducing auxiliary space from O(N) to O(1). "
+                f"Additionally, pointer traversal across dynamically allocated tree nodes incurs substantial L1/L2 cache miss latency compared to contiguous memory layouts."
+            )
+        else:
+            fallback_reply = (
+                f"Regarding your query on '{message}': In Data Structures & Algorithms, understanding memory layout "
+                f"and recursive activation records is paramount. Ensure you always define valid base cases to avoid stack overflow, "
+                f"and use post-order traversal when freeing hierarchical structures to avoid dereferencing dangling pointers."
+            )
         return ChatResponse(reply=fallback_reply, grounded_sources=sources)
 
 langchain_service = LangChainService()

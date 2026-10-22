@@ -11,6 +11,59 @@ interface RemediationChatProps {
 }
 
 export function RemediationChat({ studentContext }: RemediationChatProps) {
+  // Extract predicted score and tier
+  const predictedScore = studentContext?.prediction?.predicted_score ?? studentContext?.predicted_score;
+  const isPass =
+    studentContext?.prediction?.pass_fail_status?.toLowerCase() === "pass" ||
+    studentContext?.pass_fail_status?.toLowerCase() === "pass";
+
+  const getTierInfo = () => {
+    if (predictedScore === undefined || predictedScore === null) {
+      return {
+        label: "Curriculum Grounded",
+        className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+        prompts: [
+          "Why does recursion cause a stack overflow?",
+          "Why use post-order traversal to delete a binary tree?",
+          "Compare MergeSort vs QuickSort space complexity",
+        ],
+      };
+    }
+    if (predictedScore < 50 || !isPass) {
+      return {
+        label: `Calibrated: At-Risk Mode (${predictedScore.toFixed(1)}/100)`,
+        className: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+        prompts: [
+          "What is a base case in simple terms?",
+          "Why do dangling pointers crash the program?",
+          "How does the call stack work?",
+        ],
+      };
+    }
+    if (predictedScore < 75) {
+      return {
+        label: `Calibrated: Gap-Bridging Mode (${predictedScore.toFixed(1)}/100)`,
+        className: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+        prompts: [
+          "Why does recursion cause a stack overflow?",
+          "Why use post-order traversal to delete a binary tree?",
+          "Compare MergeSort vs QuickSort space complexity",
+        ],
+      };
+    }
+    return {
+      label: `Calibrated: Honors Mode (${predictedScore.toFixed(1)}/100)`,
+      className: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+      prompts: [
+        "How does Tail-Call Optimization achieve O(1) stack space?",
+        "Contrast pointer-chasing vs array cache miss latency",
+        "Prove Master Theorem bounds for divide & conquer",
+      ],
+    };
+  };
+
+  const tier = getTierInfo();
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
@@ -22,11 +75,7 @@ export function RemediationChat({ studentContext }: RemediationChatProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [lastSources, setLastSources] = useState<string[]>([]);
 
-  const quickPrompts = [
-    "Why does recursion cause a stack overflow?",
-    "Why use post-order traversal to delete a binary tree?",
-    "Compare MergeSort vs QuickSort space complexity",
-  ];
+  const quickPrompts = tier.prompts;
 
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input;
@@ -78,8 +127,8 @@ export function RemediationChat({ studentContext }: RemediationChatProps) {
           </div>
         </div>
 
-        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          Curriculum Grounded
+        <span className={`text-[10px] font-semibold uppercase px-2.5 py-1 rounded-full border ${tier.className}`}>
+          {tier.label}
         </span>
       </div>
 
