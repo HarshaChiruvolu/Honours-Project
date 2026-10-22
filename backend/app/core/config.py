@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     
     # Models
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = "gemini-3.8-flash"
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
     EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
     
     # Classification / Passing Threshold

@@ -21,6 +21,17 @@ export function RemediationRoadmap({ remediation }: RemediationRoadmapProps) {
     setRevealedSolutions((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const getDifficultyBadge = (difficulty: string) => {
+    const d = (difficulty || "").toLowerCase();
+    if (d.includes("easy")) {
+      return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+    }
+    if (d.includes("hard") || d.includes("adv")) {
+      return "bg-rose-500/10 text-rose-400 border-rose-500/20";
+    }
+    return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+  };
+
   const currentDayData = remediation.roadmap.find((r) => r.day === activeDay) || remediation.roadmap[0];
 
   return (
@@ -33,7 +44,7 @@ export function RemediationRoadmap({ remediation }: RemediationRoadmapProps) {
           </div>
           <div>
             <h2 className="text-base font-semibold text-white">Adaptive Remediation Plan</h2>
-            <p className="text-xs text-zinc-400">Synthesized via LangChain LCEL & Google Gemini 1.5</p>
+            <p className="text-xs text-zinc-400">Synthesized via LangChain LCEL & Google Gemini 3.8</p>
           </div>
         </div>
 
@@ -131,7 +142,7 @@ export function RemediationRoadmap({ remediation }: RemediationRoadmapProps) {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-indigo-300">{prob.topic}</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${getDifficultyBadge(prob.difficulty)}`}>
                     {prob.difficulty}
                   </span>
                 </div>

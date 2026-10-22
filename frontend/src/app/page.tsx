@@ -74,7 +74,7 @@ export default function DashboardPage() {
                   Interactive Curriculum Tutor
                 </h4>
                 <p className="text-[11px] text-zinc-400">
-                  Ask grounded questions to Gemini 1.5
+                  Ask grounded questions to Gemini 3.8
                 </p>
               </div>
               <button
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                       <span>3. LangChain GenAI</span>
                     </div>
                     <p className="text-[11px] text-zinc-400">
-                      Synthesizes deterministic recovery roadmaps via Gemini 1.5.
+                      Synthesizes deterministic recovery roadmaps via Gemini 3.8.
                     </p>
                   </div>
                 </div>

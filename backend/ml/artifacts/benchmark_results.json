@@ -1,0 +1,111 @@
+{
+  "benchmark_results": [
+    {
+      "model_name": "Linear Regression (Baseline)",
+      "literature_reference": "Standard EDM Baseline",
+      "r2_score": 0.6579,
+      "rmse": 3.815,
+      "mae": 3.0996,
+      "accuracy_pct": 80.28,
+      "f1_score": 0.7941,
+      "precision": 0.8308,
+      "recall": 0.7606,
+      "training_time_ms": 3.95
+    },
+    {
+      "model_name": "Ridge Regression (L2)",
+      "literature_reference": "Regularized Linear Baseline",
+      "r2_score": 0.658,
+      "rmse": 3.8145,
+      "mae": 3.099,
+      "accuracy_pct": 80.28,
+      "f1_score": 0.7941,
+      "precision": 0.8308,
+      "recall": 0.7606,
+      "training_time_ms": 2.33
+    },
+    {
+      "model_name": "Single Decision Tree (CART)",
+      "literature_reference": "Baseline Single Tree",
+      "r2_score": 0.5901,
+      "rmse": 4.1762,
+      "mae": 2.9639,
+      "accuracy_pct": 82.39,
+      "f1_score": 0.8175,
+      "precision": 0.8485,
+      "recall": 0.7887,
+      "training_time_ms": 2.89
+    },
+    {
+      "model_name": "Gradient Boosting (GBDT)",
+      "literature_reference": "Kumar et al. (AIED 2026)",
+      "r2_score": 0.7623,
+      "rmse": 3.1798,
+      "mae": 2.2875,
+      "accuracy_pct": 85.92,
+      "f1_score": 0.8529,
+      "precision": 0.8923,
+      "recall": 0.8169,
+      "training_time_ms": 140.68
+    },
+    {
+      "model_name": "Random Forest (Proposed Ours)",
+      "literature_reference": "Patel et al. (2025) & Proposed",
+      "r2_score": 0.7721,
+      "rmse": 3.1141,
+      "mae": 2.2832,
+      "accuracy_pct": 88.03,
+      "f1_score": 0.8777,
+      "precision": 0.8971,
+      "recall": 0.8592,
+      "training_time_ms": 225.74
+    }
+  ],
+  "feature_ranking": [
+    {
+      "feature": "Attendance_Rate",
+      "importance": 0.3587,
+      "importance_pct": 35.87,
+      "cumulative_pct": 35.87
+    },
+    {
+      "feature": "Past_Exam_Scores",
+      "importance": 0.353,
+      "importance_pct": 35.3,
+      "cumulative_pct": 71.16
+    },
+    {
+      "feature": "Study_Hours_per_Week",
+      "importance": 0.2186,
+      "importance_pct": 21.86,
+      "cumulative_pct": 93.03
+    },
+    {
+      "feature": "Parental_Education_Level",
+      "importance": 0.032,
+      "importance_pct": 3.2,
+      "cumulative_pct": 96.23
+    },
+    {
+      "feature": "Extracurricular_Activities",
+      "importance": 0.0152,
+      "importance_pct": 1.52,
+      "cumulative_pct": 97.75
+    },
+    {
+      "feature": "Gender",
+      "importance": 0.0119,
+      "importance_pct": 1.19,
+      "cumulative_pct": 98.94
+    },
+    {
+      "feature": "Internet_Access_at_Home",
+      "importance": 0.0106,
+      "importance_pct": 1.06,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "rag_retrieval_latency_ms": 150.32,
+  "best_model": "Random Forest (Proposed Ours)",
+  "rmse_reduction_vs_cart_pct": 25.43
+}

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ChatMessage, ChatResponse } from "@/lib/types";
 import { sendChatMessage } from "@/lib/api";
 import { MessageSquare, Send, Sparkles, BookOpen, Bot, User } from "lucide-react";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface RemediationChatProps {
   studentContext?: any;
@@ -73,7 +74,7 @@ export function RemediationChat({ studentContext }: RemediationChatProps) {
           </div>
           <div>
             <h2 className="text-base font-semibold text-white">Grounded Course Tutor</h2>
-            <p className="text-xs text-zinc-400">Interactive Q&A backed by ChromaDB & Gemini 1.5</p>
+            <p className="text-xs text-zinc-400">Interactive Q&A backed by ChromaDB & Gemini 3.8</p>
           </div>
         </div>
 
@@ -99,13 +100,13 @@ export function RemediationChat({ studentContext }: RemediationChatProps) {
               )}
 
               <div
-                className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap ${
+                className={`max-w-[88%] p-3.5 rounded-2xl leading-relaxed ${
                   isUser
-                    ? "bg-indigo-600 text-white rounded-br-none shadow-md shadow-indigo-600/20"
+                    ? "bg-indigo-600 text-white rounded-br-none shadow-md shadow-indigo-600/20 whitespace-pre-wrap text-xs"
                     : "bg-zinc-950/80 border border-zinc-800 text-zinc-200 rounded-bl-none"
                 }`}
               >
-                {m.content}
+                {isUser ? m.content : <MarkdownRenderer content={m.content} />}
               </div>
 
               {isUser && (

@@ -158,7 +158,7 @@ V:\HONOURS PROJECT\
    ```
 6. Start the FastAPI microservice:
    ```powershell
-   uvicorn backend.main:app --port 8000 --reload
+   uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload --reload-dir backend
    ```
    Interactive Swagger API documentation will be available at: `http://localhost:8000/docs`
 

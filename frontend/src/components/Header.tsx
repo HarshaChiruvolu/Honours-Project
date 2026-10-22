@@ -35,7 +35,7 @@ export function Header() {
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>LangChain & Gemini 1.5</span>
+            <span>LangChain & Gemini 3.8</span>
           </div>
         </div>
       </div>

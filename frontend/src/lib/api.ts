@@ -1,9 +1,38 @@
 import { StudentInput, PredictionResult, ExplainResult, AnalyzeResponse, ChatMessage, ChatResponse } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function getApiBase(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname || "127.0.0.1";
+    return `http://${hostname}:8000`;
+  }
+  return "http://127.0.0.1:8000";
+}
+
+async function fetchWithFallback(endpoint: string, options: RequestInit): Promise<Response> {
+  const primaryBase = getApiBase();
+  try {
+    return await fetch(`${primaryBase}${endpoint}`, options);
+  } catch (primaryErr) {
+    // If accessing across different hostnames, fallback to explicit loopbacks
+    const fallbacks = ["http://127.0.0.1:8000", "http://localhost:8000"];
+    for (const fb of fallbacks) {
+      if (primaryBase !== fb) {
+        try {
+          return await fetch(`${fb}${endpoint}`, options);
+        } catch {
+          // Continue trying next fallback
+        }
+      }
+    }
+    throw primaryErr;
+  }
+}
 
 export async function analyzeStudent(input: StudentInput): Promise<AnalyzeResponse> {
-  const response = await fetch(`${API_BASE}/api/analyze`, {
+  const response = await fetchWithFallback("/api/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -22,7 +51,7 @@ export async function sendChatMessage(
   history: ChatMessage[],
   studentContext?: any
 ): Promise<ChatResponse> {
-  const response = await fetch(`${API_BASE}/api/chat`, {
+  const response = await fetchWithFallback("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
